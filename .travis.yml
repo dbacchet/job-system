@@ -1,0 +1,50 @@
+language: cpp
+dist: xenial
+sudo: false
+
+matrix:
+  include:
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER_CC=gcc
+      - COMPILER_CXX=g++
+  - os: osx
+    osx_image: xcode10
+    compiler: clang
+    env: 
+      - COMPILER_CC=clang
+      - COMPILER_CXX=clang++
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER_CC=gcc
+      - COMPILER_CXX=g++
+      - CFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
+      - CXXFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
+      - LDFLAGS="-lgcov --coverage"
+    before_script:
+      - pip install --user cpp-coveralls
+    after_success:
+      - coveralls --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --gcov-options '\-lp' -e build/3rdparty -e build/_deps -e build/CMakeFiles
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+
+install:
+- echo ${PATH}
+- cmake --version
+- export CC=${COMPILER_CC}
+- export CXX=${COMPILER_CXX}
+- ${CC} --version
+- ${CC} -v
+- ${CXX} --version
+- ${CXX} -v
+
+script:
+- mkdir -p build && cd build
+- cmake -DCMAKE_BUILD_TYPE=Release .. && make -j4
+- CTEST_OUTPUT_ON_FAILURE=1 ctest -j4
+
