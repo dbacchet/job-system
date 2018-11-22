@@ -4,18 +4,23 @@ sudo: false
 
 matrix:
   include:
-  - os: linux
+  - name: "Linux gcc5.4 Release"
+    os: linux
     compiler: gcc
     env:
       - COMPILER_CC=gcc
       - COMPILER_CXX=g++
-  - os: osx
+      - CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release"
+  - name: "macOS Xcode10"
+    os: osx
     osx_image: xcode10
     compiler: clang
     env: 
       - COMPILER_CC=clang
       - COMPILER_CXX=clang++
-  - os: linux
+      - CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release"
+  - name: "Linux gcc5.4 Code Coverage"
+    os: linux
     compiler: gcc
     env:
       - COMPILER_CC=gcc
@@ -23,6 +28,7 @@ matrix:
       - CFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
       - CXXFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
       - LDFLAGS="-lgcov --coverage"
+      - CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Debug"
     before_script:
       - pip install --user cpp-coveralls
     after_success:
@@ -45,6 +51,6 @@ install:
 
 script:
 - mkdir -p build && cd build
-- cmake -DCMAKE_BUILD_TYPE=Release .. && make -j4
+- cmake ${CMAKE_OPTIONS} .. && make -j4
 - CTEST_OUTPUT_ON_FAILURE=1 ctest -j4
 
