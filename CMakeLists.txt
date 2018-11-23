@@ -13,6 +13,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # generate the compilation database file
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# set the project compilation flags for code coverage analysis
+option(ENABLE_CODE_COVERAGE "Enable Code Coverage" OFF)
+mark_as_advanced(ENABLE_CODE_COVERAGE)
+if (ENABLE_CODE_COVERAGE)
+    set(CMAKE_C_FLAGS "--coverage")
+    set(CMAKE_CXX_FLAGS "--coverage")
+    set(LDFLAGS "-lgcov --coverage")
+endif()
+
 enable_testing()
 # recurse subdirectories
 add_subdirectory(3rdparty)

@@ -25,10 +25,7 @@ matrix:
     env:
       - COMPILER_CC=gcc
       - COMPILER_CXX=g++
-      - CFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
-      - CXXFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
-      - LDFLAGS="-lgcov --coverage"
-      - CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Debug"
+      - CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DENABLE_CODE_COVERAGE=ON"
     before_script:
       - pip install --user cpp-coveralls
     after_success:
