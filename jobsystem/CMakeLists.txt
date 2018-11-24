@@ -16,7 +16,15 @@ set(ASM_SOURCES "asm/make_${CPU_ARCH}_${ASM_EXT}"
                 "asm/ontop_${CPU_ARCH}_${ASM_EXT}")
 
 # jobsystem static library
-add_library(jobsystem STATIC src/fcontext.c 
-                             src/jobsystem.c
+set(C_HEADERS include/fcontext/fcontext.h
+              include/jobsystem/job.h
+              include/jobsystem/job_queue.h
+              include/jobsystem/jobsystem.h)
+set(C_SOURCES src/fcontext.c 
+              src/job_queue.c
+              src/jobsystem.c)
+add_library(jobsystem STATIC ${C_HEADERS}
+                             ${C_SOURCES}
                              ${ASM_SOURCES})
 target_include_directories(jobsystem PUBLIC include)
+target_link_libraries(jobsystem PRIVATE c11threads)

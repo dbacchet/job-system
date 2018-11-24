@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include "gtest/gtest.h"
+#include "catch2/catch.hpp"
 
 #include "fcontext/fcontext.h"
 
@@ -27,7 +27,7 @@ static void doo(fcontext_transfer_t t)
 
 } // empty namespace 
 
-TEST(FContext, Execution) {
+TEST_CASE("fcontext coroutines", "[fcontext]") {
     fcontext_stack_t s1 = create_fcontext_stack(16 * 1024);
     fcontext_stack_t s2 = create_fcontext_stack(4 * 1024);
 
@@ -38,7 +38,7 @@ TEST(FContext, Execution) {
     jump_fcontext(ctx1, (void*)mystring);
     strcat(mystring,"END");
 
-    ASSERT_TRUE(strcmp(mystring, "FOO_DOO_FOO2_END")==0);
+    REQUIRE(strcmp(mystring, "FOO_DOO_FOO2_END")==0);
 
     destroy_fcontext_stack(&s1);
     destroy_fcontext_stack(&s2);

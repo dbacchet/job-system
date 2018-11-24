@@ -29,7 +29,7 @@ matrix:
     before_script:
       - pip install --user cpp-coveralls
     after_success:
-      - coveralls --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --gcov-options '\-lp' -e build/3rdparty -e build/_deps -e build/CMakeFiles
+      - coveralls --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --gcov-options '\-lp' -e 3rdparty -e build/3rdparty -e build/_deps -e build/CMakeFiles
 
 notifications:
   email:
