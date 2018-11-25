@@ -262,18 +262,19 @@ static inline void call_once(once_flag *flag, void (*func)(void))
 	pthread_once(flag, func);
 }
 
-#if __STDC_VERSION__ < 201112L || defined(C11THREADS_NO_TIMED_MUTEX)
+// -- dbacchet: commented out to avoid warnings compiling on gcc5.4.0 with -std=c11
+// #if __STDC_VERSION__ < 201112L || defined(C11THREADS_NO_TIMED_MUTEX)
 /* TODO take base into account */
-static inline int timespec_get(struct timespec *ts, int base)
-{
-	struct timeval tv;
-
-	gettimeofday(&tv, 0);
-
-	ts->tv_sec = tv.tv_sec;
-	ts->tv_nsec = tv.tv_usec * 1000;
-	return base;
-}
-#endif	/* not C11 */
+// static inline int timespec_get(struct timespec *ts, int base)
+// {
+// 	struct timeval tv;
+//
+// 	gettimeofday(&tv, 0);
+//
+// 	ts->tv_sec = tv.tv_sec;
+// 	ts->tv_nsec = tv.tv_usec * 1000;
+// 	return base;
+// }
+// #endif	/* not C11 */
 
 #endif	/* C11THREADS_H_ */
