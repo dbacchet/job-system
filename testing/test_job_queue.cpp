@@ -29,7 +29,7 @@ TEST_CASE( "null job queue", "[job queue]" ) {
     REQUIRE(job_queue_destroy(&q) == false);
     REQUIRE(job_queue_empty(q) == true);
     REQUIRE(job_queue_size(q) == 0);
-    REQUIRE(job_queue_push(q, {1, "uno", NULL, NULL}) == false);
+    REQUIRE(job_queue_push(q, {1, NULL, NULL, NULL}) == false);
     job_t job;
     REQUIRE(job_queue_pop(q, &job) == false);
 }
@@ -38,22 +38,25 @@ TEST_CASE( "job queue usage", "[job queue]" ) {
     job_queue_t q = job_queue_create();
     REQUIRE(job_queue_empty(q) == true);
     // add elements
-    job_queue_push(q, {1, "uno", NULL, NULL});
-    job_queue_push(q, {2, "due", NULL, NULL});
-    job_queue_push(q, {3, "tre", NULL, NULL});
+    int value1 = 101;
+    int value2 = 102;
+    int value3 = 103;
+    job_queue_push(q, {1, NULL, NULL, (void*)&value1});
+    job_queue_push(q, {2, NULL, NULL, (void*)&value2});
+    job_queue_push(q, {3, NULL, NULL, (void*)&value3});
     REQUIRE(job_queue_empty(q) == false);
     REQUIRE(job_queue_size(q) == 3);
     // retrieve elements
     job_t j{.id=111};
     REQUIRE(job_queue_pop(q, &j) == true);
     REQUIRE(j.id == 1);
-    REQUIRE(strcmp(j.name, "uno") == 0);
+    REQUIRE(j.counter == (void*)&value1);
     REQUIRE(job_queue_pop(q, &j) == true);
     REQUIRE(j.id == 2);
-    REQUIRE(strcmp(j.name, "due") == 0);
+    REQUIRE(j.counter == (void*)&value2);
     REQUIRE(job_queue_pop(q, &j) == true);
     REQUIRE(j.id == 3);
-    REQUIRE(strcmp(j.name, "tre") == 0);
+    REQUIRE(j.counter == (void*)&value3);
     REQUIRE(job_queue_pop(q, &j) == false);
     job_queue_destroy(&q);
 }
@@ -62,9 +65,9 @@ TEST_CASE( "job queue destruction", "[job queue]" ) {
     job_queue_t q = job_queue_create();
     REQUIRE(job_queue_empty(q) == true);
     // add elements
-    job_queue_push(q, {1, "uno", NULL, NULL});
-    job_queue_push(q, {2, "due", NULL, NULL});
-    job_queue_push(q, {3, "tre", NULL, NULL});
+    job_queue_push(q, {1, NULL, NULL, NULL});
+    job_queue_push(q, {2, NULL, NULL, NULL});
+    job_queue_push(q, {3, NULL, NULL, NULL});
     REQUIRE(job_queue_empty(q) == false);
     REQUIRE(job_queue_size(q) == 3);
     // cleanup
@@ -96,7 +99,7 @@ int enqueue_thread_fcn(void *data) {
         job_data *jdata = new job_data();
         jdata->base = tdata->base;
         jdata->offset = idx;
-        job_queue_push(tdata->q,{101,"name",job_fcn,(void*)jdata});
+        job_queue_push(tdata->q,{101,job_fcn,(void*)jdata, NULL});
     }
     // printf("enqueue thread %llx completed\n", (uint64_t)thrd_current());
     return 0;

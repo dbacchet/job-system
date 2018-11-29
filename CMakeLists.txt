@@ -28,5 +28,6 @@ enable_testing()
 # recurse subdirectories
 add_subdirectory(3rdparty)
 add_subdirectory(jobsystem)
+add_subdirectory(samples)
 add_subdirectory(testing)
 
