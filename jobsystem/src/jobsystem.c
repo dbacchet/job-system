@@ -94,12 +94,13 @@ void stop_job_manager(job_manager_handle jm) {
     }
 }
 
-void destroy_job_manager(job_manager_handle jm) {
+void destroy_job_manager(job_manager_handle *jm) {
     // stop threads in case they're still running
-    if (!jm->stop_threads) {
-        stop_job_manager(jm);
+    struct job_manager_t *jm_ptr = *jm;
+    if (!jm_ptr->stop_threads) {
+        stop_job_manager(jm_ptr);
     }
-    free(jm);
-    jm = NULL;
+    free(jm_ptr);
+    (*jm) = NULL; // invalidate the handle
 }
 

@@ -3,18 +3,18 @@
 #include "catch2/catch.hpp"
 
 TEST_CASE("jobsystem creation", "[jobsystem]") {
-    create_job_manager(4, 20, 512);
-    // ConcurrentQueue<int> q;
-    // ASSERT_EQ(q.size(),0);
-    // q.push(1);
-    // ASSERT_EQ(q.size(),1);
+    auto jm = create_job_manager(4, 20, 512);
+    REQUIRE(jm != NULL);
+    stop_job_manager(jm);
+    destroy_job_manager(&jm);
+    REQUIRE(jm == NULL);
 }
 
 TEST_CASE("jobsystem run", "[jobsystem]") {
-    create_job_manager(4, 10, 1024*1024);
-    // ConcurrentQueue<int> q;
-    // ASSERT_EQ(q.size(),0);
-    // q.push(1);
-    // ASSERT_EQ(q.size(),1);
+    auto jm = create_job_manager(4, 10, 1024*1024);
+    // destroy withouth stopping before (will stop automatically)
+    REQUIRE(jm != NULL);
+    destroy_job_manager(&jm);
+    REQUIRE(jm == NULL);
 }
 
