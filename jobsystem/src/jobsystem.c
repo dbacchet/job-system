@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdatomic.h>
+#include <inttypes.h>
 
 struct atomic_counter_t {
     atomic_int counter;
@@ -34,7 +35,7 @@ void fiber_function(fcontext_transfer_t t) {
     struct fiber_function_data_t *fiber_data = (struct fiber_function_data_t*)t.data;
     job_manager_handle jm = fiber_data->jm;
     while (jm && !jm->stop_threads) {
-        printf("executing fiber function on thread %llx\n", (uint64_t)thrd_current());
+        printf("executing fiber function on thread %"PRIx64"\n", (uint64_t)thrd_current());
         thrd_sleep(&(struct timespec){.tv_sec=1}, NULL);
     }
     // back to the calling context
@@ -54,7 +55,7 @@ struct thread_function_data_t {
 int thread_function(void *data) {
     struct thread_function_data_t *thread_data = (struct thread_function_data_t*)data;
 
-    printf("executing thread function on thread %llx\n", (uint64_t)thrd_current());
+    printf("executing thread function on thread %"PRIx64"\n", (uint64_t)thrd_current());
     // switch context
     fcontext_stack_t s1 = create_fcontext_stack(32 * 1024);
     fcontext_t ctx1 = make_fcontext(s1.sptr, s1.ssize, fiber_function);
@@ -62,7 +63,7 @@ int thread_function(void *data) {
     jump_fcontext(ctx1, (void*)&fiber_data);
 
     // back to the original thread context
-    printf("back to thread function on thread %llx\n", (uint64_t)thrd_current());
+    printf("back to thread function on thread %"PRIx64"\n", (uint64_t)thrd_current());
     destroy_fcontext_stack(&s1);
     return 0;
 }
